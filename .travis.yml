@@ -51,6 +51,5 @@ script:
     tail -6 ${idempotence} | grep -q 'changed=0.*failed=0'
     && echo "Idempotence check: PASSED";
     exit
-    || echo "Idempotence check: FAILED"; echo "";
-    tail -6 ${idempotence} | grep --color=auto -B1 -A1 "\(changed\|failed\):";
+    || echo "Idempotence check: FAILED";
     exit 1

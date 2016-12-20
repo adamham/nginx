@@ -1,0 +1,53 @@
+# {{ ansible_managed }}
+
+user  {{ nginx_user }};
+worker_processes  {{ nginx_worker_processes }};
+pid {{ nginx_pid }};
+
+events {
+    worker_connections {{ nginx_worker_connections }};
+}
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    log_format  main  {{ nginx_log_format }};
+    access_log  {{ nginx_log_dir }}{{ nginx_access_log }}  main;
+	  error_log {{ nginx_log_dir }}{{ nginx_error_log }} {{ nginx_error_log_level }};
+
+    keepalive_timeout {{ nginx_keepalive_timeout }};
+    keepalive_requests {{ nginx_keepalive_requests }};
+    sendfile            on;
+    tcp_nopush          on;
+    tcp_nodelay		      on;
+
+    client_body_buffer_size      {{ nginx_client_body_buffer_size }};
+    client_max_body_size         {{ nginx_client_max_body_size }};
+    client_header_buffer_size    {{ nginx_client_header_buffer_size }};
+    large_client_header_buffers  {{ nginx_large_client_header_buffers }};
+    output_buffers               {{ nginx_output_buffers }};
+    postpone_output              {{ nginx_postpone_output }};
+
+    client_header_timeout  {{ nginx_client_header_timeout }};
+    client_body_timeout    {{ nginx_client_body_timeout }};
+    send_timeout           {{ nginx_send_timeout }};
+
+    add_header X-Content-Type-Options nosniff;
+    add_header X-XSS-Protection "1; mode=block";
+
+  	gzip {{ nginx_gzip }};
+  	gzip_disable {{ nginx_gzip_disable }};
+  	gzip_vary {{ nginx_gzip_vary }};
+  	gzip_proxied {{ nginx_gzip_proxied }};
+  	gzip_comp_level {{ nginx_gzip_comp_level }};
+  	gzip_buffers {{ nginx_gzip_buffers }};
+  	gzip_types {{ nginx_gzip_types|join(' ') }};
+
+    open_file_cache max={{ nginx_open_file_cache_max }} inactive={{ nginx_open_file_cache_inactive }};
+    open_file_cache_valid {{ nginx_open_file_cache_valid }};
+    open_file_cache_min_uses {{ nginx_open_file_cache_min_uses }};
+    open_file_cache_errors {{ nginx_open_file_cache_errors }};
+
+    include /etc/nginx/conf.d/*.conf;
+}

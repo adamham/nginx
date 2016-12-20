@@ -1,0 +1,56 @@
+---
+sudo: required
+
+services:
+  - docker
+
+env:
+  - distro: 'ubuntu1604'
+    opts: '--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro'
+    init: '/lib/systemd/systemd'
+  - distro: 'centos7'
+    opts: '--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro'
+    init: '/lib/systemd/systemd'
+  - distro: 'debian8'
+    opts: '--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro'
+    init: '/lib/systemd/systemd'
+
+before_install:
+  - docker pull geerlingguy/docker-${distro}-ansible:latest
+
+script:
+  - container=$(mktemp)
+
+  - >
+    docker run
+    --detach
+    --volume=${PWD}:/etc/ansible/roles/this_role:ro ${opts}
+    geerlingguy/docker-${distro}-ansible:latest ${init} > ${container}
+
+  - >
+    docker exec
+    --tty $(cat ${container})
+    env TERM=XTERM
+    ansible-playbook /etc/ansible/roles/this_role/tests/main.yml --syntax-check
+
+  - >
+    docker exec
+    --tty $(cat ${container})
+    env TERM=XTERM
+    ansible-playbook /etc/ansible/roles/this_role/tests/main.yml
+
+  - idempotence=$(mktemp)
+  - >
+    docker exec
+    --tty $(cat ${container})
+    env TERM=XTERM
+    ansible-playbook /etc/ansible/roles/this_role/tests/main.yml
+    > ${idempotence}
+
+  - >
+    tail -6 ${idempotence} | grep -q 'changed=0.*failed=0'
+    && echo "Idempotence check: PASSED";
+    exit
+    || echo "Idempotence check: FAILED"; echo "";
+    tail -6 ${idempotence} | grep --color=auto -B1 -A1 "\(changed\|failed\):";
+    exit 1

@@ -1,0 +1,7 @@
+---
+- assert:
+    that: ansible_version.major == 2
+    msg: "This playbook is for Ansible version 2"
+    
+- include: packages.yml
+- include: configuration.yml

@@ -1,0 +1,56 @@
+- block:
+    - name: install nginx yum repository
+      yum_repository:
+        name: CentOS-Nginx
+        baseurl: http://nginx.org/packages/{{ rh_os }}/{{ rh_release_ver }}/{{ rh_base_arch }}/
+        enabled: yes
+        description: Nginx webserver
+        gpgcheck: no
+        state: present
+      tags:
+        - nginx_install_nginx_yum_repo
+
+    - name: install nginx
+      yum:
+        name: nginx
+        state: present
+      tags:
+        - nginx_install_packages
+
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- block:
+    - name: install nginx apt key
+      apt_key:
+        url: http://nginx.org/keys/nginx_signing.key
+        id: 7BD9BF62
+        state: present
+      tags:
+        - nginx_install_nginx_apt_repo_key
+
+    - name: install debian nginx apt repository
+      apt_repository:
+        repo: 'deb http://nginx.org/packages/mainline/debian/ "{{ ansible_distribution_release }}" nginx'
+        state: present
+        update_cache: yes
+      when: ansible_distribution == 'Debian'
+      tags:
+        - nginx_install_nginx_apt_repo
+
+    - name: install ubuntu nginx apt repository
+      apt_repository:
+        repo: 'deb http://nginx.org/packages/mainline/ubuntu/ "{{ ansible_distribution_release }}" nginx'
+        state: present
+        update_cache: yes
+      when: ansible_distribution == 'Ubuntu'
+      tags:
+        - nginx_install_nginx_apt_repo
+
+    - name: install nginx
+      apt:
+        name: nginx
+        state: present
+      tags:
+        - nginx_install_packages
+
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'

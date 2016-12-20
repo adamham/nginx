@@ -1,0 +1,74 @@
+---
+
+rh_os: 'centos'
+rh_release_ver: '7'
+rh_base_arch: 'x86_64'
+
+nginx_user: 'nginx'
+nginx_group: "{{ nginx_user }}"
+nginx_worker_processes: 'auto'
+nginx_pid: '/run/nginx.pid'
+nginx_worker_connections: '1024'
+nginx_log_dir: '/var/log/nginx/'
+nginx_error_log: 'error.log'
+nginx_access_log: 'access.log'
+nginx_log_format: '$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" "$http_x_forwarded_for"'
+nginx_error_log_level: 'notice'
+nginx_keepalive_timeout: '65'
+nginx_keepalive_requests: '100000'
+nginx_sendfile: 'on'
+nginx_tcp_nopush: 'on'
+nginx_tcp_nodelay: 'on'
+
+nginx_client_header_timeout: '12'
+nginx_client_body_timeout: '12'
+nginx_send_timeout: '10'
+
+nginx_gzip: 'on'
+nginx_gzip_disable: '"MSIE [1-6]\."'
+nginx_gzip_vary: 'on'
+nginx_gzip_proxied: 'any'
+nginx_gzip_comp_level: '2'
+nginx_gzip_buffers: '16 8k'
+nginx_gzip_types:
+  - text/plain
+  - text/css application/json
+  - application/x-javascript
+  - text/xml application/xml
+  - application/xml+rss
+  - text/javascript
+
+nginx_client_body_buffer_size: '128k'
+nginx_client_max_body_size: '10m'
+nginx_client_header_buffer_size: '1k'
+nginx_large_client_header_buffers: '4 4k'
+nginx_output_buffers: '1 32k'
+nginx_postpone_output: '1460'
+
+nginx_strict_hostname_access: 'true'
+
+nginx_limit_request_method_access: 'true'
+nginx_allowed_request_methods:
+  - GET
+  - HEAD
+  - POST
+
+nginx_filter_referers: 'true'
+nginx_deny_referers:
+  - babes
+  - forsale
+  - girl
+  - jewelry
+  - love
+  - nudit
+  - organic
+  - poker
+  - porn
+  - sex
+  - teen
+
+nginx_open_file_cache_max: '1000'
+nginx_open_file_cache_inactive: '20s'
+nginx_open_file_cache_valid: '30s'
+nginx_open_file_cache_min_uses: '5'
+nginx_open_file_cache_errors: 'off'

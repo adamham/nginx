@@ -1,0 +1,19 @@
+{% if nginx_strict_hostname_access %}
+if ($host !~ ^($server_name)$ ) {
+   return 444;
+}
+{% endif %}
+
+{% if nginx_limit_request_method_access %}
+if ($request_method !~ ^({{ nginx_allowed_request_methods|join('|') }})$ ) {
+   return 444;
+}
+{% endif %}
+
+# Deny certain Referers ###
+{% if nginx_filter_referers %}
+if ( $http_referer ~* ({{ nginx_deny_referers|join('|') }}) ) {
+   return 404;
+   return 403;
+}
+{% endif %}
